@@ -6,16 +6,14 @@ exports.processLogin = (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res
-        .status(400)
-        .render("login", { errors: [{ msg: "Invalid email/password" }] });
+      return res.status(400).json({ error: "Could not authenticate user" });
     }
 
     req.logIn(user, (err) => {
       if (err) {
         return next(err);
       }
-      return res.redirect("/");
+      return res.status(200).json({ status: "Authentication successful" });
     });
   })(req, res, next);
 };

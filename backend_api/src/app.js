@@ -3,9 +3,8 @@ const passport = require("passport");
 require("dotenv").config();
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
-const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { prisma } = require("../lib/prisma.js");
-const expressSession = require("express-session");
+const session = require("express-session");
 const userModel = require("./models/user");
 
 const registerRouter = require("./routes/registerRouter");
@@ -15,21 +14,14 @@ const logoutRouter = require("./routes/logoutRouter.js");
 const app = express();
 
 app.use(
-  expressSession({
-    cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000, //ms
-    },
+  session({
     secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
-    store: new PrismaSessionStore(prisma, {
-      checkPeriod: 2 * 60 * 1000, //ms
-      dbRecordIdIsSessionId: true,
-      dbRecordIdFunction: undefined,
-    }),
+    resave: false,
+    saveUninitialized: false,
   }),
 );
 app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -64,11 +56,14 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-app.use(express.urlencoded({ extended: false }));
-
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.get("/logout", logoutRouter);
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: err });
+});
 
 app.listen(3000, (error) => {
   if (error) {

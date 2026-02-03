@@ -1,3 +1,4 @@
+const { Router } = require("express");
 const { processLogout } = require("../controllers/logoutController");
 
 const logoutRouter = Router();
