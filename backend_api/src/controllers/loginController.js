@@ -6,6 +6,7 @@ exports.processLogin = (req, res, next) => {
       return next(err);
     }
     if (!user) {
+      console.error("Error: could not authenticate");
       return res.status(400).json({ error: "Could not authenticate user" });
     }
 

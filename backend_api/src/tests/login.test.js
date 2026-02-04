@@ -2,58 +2,17 @@ const request = require("supertest");
 const express = require("express");
 const app = express();
 const passport = require("passport");
-const session = require("express-session");
 require("dotenv").config();
-const LocalStrategy = require("passport-local").Strategy;
 
 const loginRouter = require("../routes/loginRouter");
+const { setupAuth } = require("./authenticationFixture");
+const { setupErrorHandling } = require("./errorHandlingFixture");
 
-app.use(express.urlencoded({ extended: false }));
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  }),
-);
-app.use(passport.session());
-
-const mockUser = {
-  id: 1,
-  username: process.env.TEST_USER_NAME,
-  password: process.env.TEST_USER_PW,
-};
-
-passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    try {
-      if (username === mockUser.username && password === mockUser.password) {
-        return done(null, mockUser);
-      } else if (username !== mockUser.username) {
-        return done(null, false, { message: "Incorrect username" });
-      } else {
-        return done(null, false, { message: "Incorrect password" });
-      }
-    } catch (err) {
-      return done(err);
-    }
-  }),
-);
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-passport.deserializeUser(async (id, done) => {
-  done(null, mockUser);
-});
+setupAuth(app, passport);
 
 app.use("/login", loginRouter);
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: err });
-});
+setupErrorHandling(app);
 
 describe("POST /login", function () {
   it("receives bad data, responds with 400 error", (done) => {

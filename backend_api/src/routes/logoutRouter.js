@@ -3,6 +3,6 @@ const { processLogout } = require("../controllers/logoutController");
 
 const logoutRouter = Router();
 
-logoutRouter.get("/", processLogout);
+logoutRouter.post("/", processLogout);
 
 module.exports = logoutRouter;
