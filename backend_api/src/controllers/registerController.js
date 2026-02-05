@@ -43,7 +43,7 @@ exports.processRegistration = [
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).render("sign-up", { errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     try {
@@ -58,9 +58,8 @@ exports.processRegistration = [
         password: userData.password,
       });
 
-      res.redirect("/");
+      res.status(200).json({ status: "Successfully registered user" });
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },
