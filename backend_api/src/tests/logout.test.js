@@ -6,6 +6,9 @@ const passport = require("passport");
 const logoutRouter = require("../routes/logoutRouter");
 const { setupAuth, loginTestUser } = require("./authenticationFixture");
 const { setupErrorHandling } = require("./errorHandlingFixture");
+const { setupLogging } = require("./loggingFixture");
+
+setupLogging(app, express);
 
 setupAuth(app, passport);
 

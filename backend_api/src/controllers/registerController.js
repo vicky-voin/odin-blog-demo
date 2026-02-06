@@ -31,11 +31,6 @@ const validateUserData = [
     .withMessage(
       "Password must contain at least 8 characters, one uppercase letter, one lowercase letter and one number",
     ),
-  body("confirmPassword")
-    .custom((value, { req }) => {
-      return value === req.body.password;
-    })
-    .withMessage("Passwords must match"),
 ];
 
 exports.processRegistration = [

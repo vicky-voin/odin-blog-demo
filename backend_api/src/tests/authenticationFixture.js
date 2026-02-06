@@ -7,8 +7,6 @@ const LocalStrategy = require("passport-local").Strategy;
 const TEST_LOGIN_ENDPOINT = "/test_login";
 
 exports.setupAuth = (app, passport) => {
-  app.use(express.urlencoded({ extended: false }));
-
   app.use(
     session({
       secret: process.env.SESSION_SECRET,

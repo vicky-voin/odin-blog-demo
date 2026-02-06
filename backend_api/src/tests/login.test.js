@@ -7,6 +7,9 @@ require("dotenv").config();
 const loginRouter = require("../routes/loginRouter");
 const { setupAuth } = require("./authenticationFixture");
 const { setupErrorHandling } = require("./errorHandlingFixture");
+const { setupLogging } = require("./loggingFixture");
+
+setupLogging(app, express);
 
 setupAuth(app, passport);
 
