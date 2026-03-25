@@ -112,6 +112,10 @@ describe("POST /register", function () {
       .type("form")
       .send(userData)
       .expect("Content-type", /json/)
+      .expect((res) => {
+        if (!("token" in res.body))
+          throw new Error("No JWT was returned after successful register");
+      })
       .expect(200, done);
   });
 });

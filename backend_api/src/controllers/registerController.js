@@ -1,6 +1,8 @@
 const user = require("../models/user.js");
 const bcrypt = require("bcryptjs");
 const { body, validationResult, matchedData } = require("express-validator");
+var jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const validateUserData = [
   body("first_name")
@@ -47,13 +49,17 @@ exports.processRegistration = [
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       userData.password = hashedPassword;
 
+      var token = jwt.sign(userData.username, process.env.JWT_SECRET);
+
       await user.register({
         name: userData.first_name + " " + userData.last_name,
         email: userData.username,
         password: userData.password,
       });
 
-      res.status(200).json({ status: "Successfully registered user" });
+      res
+        .status(200)
+        .json({ status: "Successfully registered user", token: token });
     } catch (err) {
       next(err);
     }

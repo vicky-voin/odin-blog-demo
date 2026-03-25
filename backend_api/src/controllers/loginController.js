@@ -1,4 +1,5 @@
 const passport = require("passport");
+var jwt = require("jsonwebtoken");
 
 exports.processLogin = (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
@@ -14,7 +15,12 @@ exports.processLogin = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.status(200).json({ status: "Authentication successful" });
+
+      var token = jwt.sign(user.username, process.env.JWT_SECRET);
+
+      return res
+        .status(200)
+        .json({ status: "Authentication successful", token: token });
     });
   })(req, res, next);
 };

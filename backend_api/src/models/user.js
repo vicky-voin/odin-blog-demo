@@ -1,4 +1,3 @@
-const { error } = require("winston");
 const { prisma } = require("../../lib/prisma");
 
 exports.getWithId = async (userId) => {
